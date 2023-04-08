@@ -1,24 +1,66 @@
-name: Build, tag, and release the BreezSDK Swift Package
+name: Release
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release of the breez-sdk repo to publish (MAJOR.MINOR.PATCH)'
+        description: 'breez-sdk repo release (MAJOR.MINOR.PATCH)'
         required: true
         type: string
 
 jobs:
   build-tag-release:
     name: Build, tag, and release the BreezSDK Swift Package
-    runs-on: macos-12
+    runs-on: macOS-latest
     steps:
+      - name: Install required dependencies
+        run: |
+          brew install protobuf
+          cargo install --version 0.22.0 uniffi_bindgen
       - name: Checkout breez-sdk repo
         uses: actions/checkout@v3
         with:
           repository: ${{ github.repository_owner }}/breez-sdk
           path: build
-          # ref: v${{ inputs.version }}
+          # ref: ${{ inputs.version }} # breez-sdk doesn't have any versions/tags yet
       - name: Checkout breez-sdk-swift repo
         uses: actions/checkout@v3
         with:
           path: dist
+      - name: Build local Swift Package
+        working-directory: build/libs/sdk-bindings
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.REPO_SSH_KEY}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+          ssh-add ~/.ssh/id_rsa
+          make init
+          make bindings-swift
+      - name: Compress Rust bindings XCFramework
+        working-directory: build/libs/sdk-bindings/bindings-swift
+        run: |
+          zip -9 -r breez_sdkFFI.xcframework.zip breez_sdkFFI.xcframework
+          echo "XCF_CHECKSUM=`swift package compute-checksum breez_sdkFFI.xcframework.zip`" >> $GITHUB_ENV
+      - name: Update the BreezSDK Swift Package
+        working-directory: build/libs/sdk-bindings/bindings-swift
+        run: |
+          sed 's#.binaryTarget(name: "breez_sdkFFI", path: "./breez_sdkFFI.xcframework"),#.binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/${{ inputs.version }}/breez_sdkFFI.xcframework.zip", checksum: "${{ env.XCF_CHECKSUM }}"),#;/.testTarget(name: "BreezSDKTests", dependencies: \["BreezSDK"\]),/d' Package.swift > ../../../../dist/Package.swift
+          cp -r Sources ../../../../dist
+      - name: Tag the BreezSDK Swift Package
+        working-directory: dist
+        run: |
+          git add Package.swift
+          git add Sources
+          git commit -m "Update BreezSDK to version ${{ inputs.version }}"
+          git push
+          git tag ${{ inputs.version }} -m "${{ inputs.version }}"
+          git push --tags
+      - name: Release and attach XCFramework binary artifact
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/libs/sdk-bindings/bindings-swift/breez_sdkFFI.xcframework.zip"
+          tag: ${{ inputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ inputs.version }}
+          prerelease: true
