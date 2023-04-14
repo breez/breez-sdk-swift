@@ -38,4 +38,4 @@ This repository is used to publish a Swift package providing Swift bindings to t
 
 Any changes to the Breez SDK, the Swift bindings, and the configuration of this Swift package must be made via the [breez-sdk](https://github.com/breez/breez-sdk) repo.
 
-To release a new version of this package, go to the Actions tab of this GitHub repository. The select the *Release* workflow and run it on the main branch. It will ask for a version as input. This allows you to specify the version (e.g., *0.0.1*) of the [breez-sdk](https://github.com/breez/breez-sdk) repository that will be released as a Swift package.
+To release a new version of this package, go to the Actions tab of this GitHub repository. The select the *Publish Swift Package* workflow and run it on the main branch. It will ask for a version as input. This allows you to specify the version (e.g., *0.0.1*) of the [breez-sdk](https://github.com/breez/breez-sdk) repository that will be released as a Swift package.
