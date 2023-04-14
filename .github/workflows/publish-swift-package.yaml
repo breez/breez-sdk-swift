@@ -21,7 +21,7 @@ jobs:
         with:
           repository: ${{ github.repository_owner }}/breez-sdk
           path: build
-          # ref: ${{ inputs.version }} # breez-sdk doesn't have any versions/tags yet
+          ref: ${{ inputs.version }}
       - name: Checkout breez-sdk-swift repo
         uses: actions/checkout@v3
         with:
