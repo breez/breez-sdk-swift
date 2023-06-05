@@ -1,4 +1,4 @@
-name: Publish Swift Package
+name: Publish Swift Bindings
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-tag-release:
-    name: Build, tag, and release the BreezSDK Swift Package
+    name: Build, tag, and release the Breez SDK Swift bindings
     runs-on: macOS-latest
     steps:
       - name: Install required dependencies
@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: dist
-      - name: Build local Swift Package
+      - name: Build Swift bindings
         working-directory: build/libs/sdk-bindings
         env:
           SSH_PRIVATE_KEY: ${{secrets.REPO_SSH_KEY}}
@@ -37,22 +37,29 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           make init
           make bindings-swift
-      - name: Compress Rust bindings XCFramework
+      - name: Compress XCFramework
         working-directory: build/libs/sdk-bindings/bindings-swift
         run: |
           zip -9 -r breez_sdkFFI.xcframework.zip breez_sdkFFI.xcframework
           echo "XCF_CHECKSUM=`swift package compute-checksum breez_sdkFFI.xcframework.zip`" >> $GITHUB_ENV
-      - name: Update the BreezSDK Swift Package
+      - name: Update Swift Package definition
         working-directory: build/libs/sdk-bindings/bindings-swift
         run: |
           sed 's#.binaryTarget(name: "breez_sdkFFI", path: "./breez_sdkFFI.xcframework"),#.binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/${{ inputs.version }}/breez_sdkFFI.xcframework.zip", checksum: "${{ env.XCF_CHECKSUM }}"),#;/.testTarget(name: "BreezSDKTests", dependencies: \["BreezSDK"\]),/d' Package.swift > ../../../../dist/Package.swift
           cp -r Sources ../../../../dist
-      - name: Tag the BreezSDK Swift Package
+      - name: Update Cocoapods definitions
+        working-directory: dist
+        run: |
+          sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.version }}"#' breez_sdkFFI.podspec
+          sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.version }}"#' BreezSDK.podspec
+      - name: Tag the Swift bindings
         working-directory: dist
         run: |
           git add Package.swift
           git add Sources
-          git commit -m "Update BreezSDK to version ${{ inputs.version }}"
+          git add breez_sdkFFI.podspec
+          git add BreezSDK.podspec
+          git commit -m "Update Breez SDK Swift bindings to version ${{ inputs.version }}"
           git push
           git tag ${{ inputs.version }} -m "${{ inputs.version }}"
           git push --tags
@@ -64,3 +71,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: ${{ inputs.version }}
           prerelease: true
+      - name: Push update to Cocoapods trunk
+        working-directory: dist
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{secrets.COCOAPODS_TRUNK_TOKEN}}
+        run: |
+          pod trunk push breez_sdkFFI.podspec --allow-warnings
+          pod repo update
+          pod trunk push BreezSDK.podspec --allow-warnings
