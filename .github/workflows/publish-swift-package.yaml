@@ -80,7 +80,5 @@ jobs:
         env:
           COCOAPODS_TRUNK_TOKEN: ${{secrets.COCOAPODS_TRUNK_TOKEN}}
         run: |
-          pod repo add cocoapods https://github.com/CocoaPods/Specs.git
           pod trunk push breez_sdkFFI.podspec --allow-warnings
-          pod repo update
-          pod trunk push BreezSDK.podspec --allow-warnings
+          pod trunk push BreezSDK.podspec --allow-warnings --synchronous
