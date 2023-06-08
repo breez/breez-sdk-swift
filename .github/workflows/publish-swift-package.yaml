@@ -26,7 +26,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: dist
-          ref: cocoapods
       - name: Build Swift bindings
         working-directory: build/libs/sdk-bindings
         env:
@@ -38,43 +37,40 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           make init
           make bindings-swift
-      # - name: Compress XCFramework
-      #   working-directory: build/libs/sdk-bindings/bindings-swift
-      #   run: |
-      #     zip -9 -r breez_sdkFFI.xcframework.zip breez_sdkFFI.xcframework
-      #     echo "XCF_CHECKSUM=`swift package compute-checksum breez_sdkFFI.xcframework.zip`" >> $GITHUB_ENV
-      # - name: Update Swift Package definition
-      #   working-directory: build/libs/sdk-bindings/bindings-swift
-      #   run: |
-      #     sed 's#.binaryTarget(name: "breez_sdkFFI", path: "./breez_sdkFFI.xcframework"),#.binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/${{ inputs.version }}/breez_sdkFFI.xcframework.zip", checksum: "${{ env.XCF_CHECKSUM }}"),#;/.testTarget(name: "BreezSDKTests", dependencies: \["BreezSDK"\]),/d' Package.swift > ../../../../dist/Package.swift
-      #     cp -r Sources ../../../../dist
+      - name: Compress XCFramework
+        working-directory: build/libs/sdk-bindings/bindings-swift
+        run: |
+          zip -9 -r breez_sdkFFI.xcframework.zip breez_sdkFFI.xcframework
+          echo "XCF_CHECKSUM=`swift package compute-checksum breez_sdkFFI.xcframework.zip`" >> $GITHUB_ENV
+      - name: Update Swift Package definition
+        working-directory: build/libs/sdk-bindings/bindings-swift
+        run: |
+          sed 's#.binaryTarget(name: "breez_sdkFFI", path: "./breez_sdkFFI.xcframework"),#.binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/${{ inputs.version }}/breez_sdkFFI.xcframework.zip", checksum: "${{ env.XCF_CHECKSUM }}"),#;/.testTarget(name: "BreezSDKTests", dependencies: \["BreezSDK"\]),/d' Package.swift > ../../../../dist/Package.swift
+          cp -r Sources ../../../../dist
       - name: Update Cocoapods definitions
         working-directory: dist
         run: |
           sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.version }}"#' breez_sdkFFI.podspec
           sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.version }}"#' BreezSDK.podspec
-          echo "DEBUG"
-          cat breez_sdkFFI.podspec
-          cat BreezSDK.podspec
-      # - name: Tag the Swift bindings
-      #   working-directory: dist
-      #   run: |
-      #     git add Package.swift
-      #     git add Sources
-      #     git add breez_sdkFFI.podspec
-      #     git add BreezSDK.podspec
-      #     git commit -m "Update Breez SDK Swift bindings to version ${{ inputs.version }}"
-      #     git push
-      #     git tag ${{ inputs.version }} -m "${{ inputs.version }}"
-      #     git push --tags
-      # - name: Release and attach XCFramework binary artifact
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     artifacts: "build/libs/sdk-bindings/bindings-swift/breez_sdkFFI.xcframework.zip"
-      #     tag: ${{ inputs.version }}
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     name: ${{ inputs.version }}
-      #     prerelease: true
+      - name: Tag the Swift bindings
+        working-directory: dist
+        run: |
+          git add Package.swift
+          git add Sources
+          git add breez_sdkFFI.podspec
+          git add BreezSDK.podspec
+          git commit -m "Update Breez SDK Swift bindings to version ${{ inputs.version }}"
+          git push
+          git tag ${{ inputs.version }} -m "${{ inputs.version }}"
+          git push --tags
+      - name: Release and attach XCFramework binary artifact
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/libs/sdk-bindings/bindings-swift/breez_sdkFFI.xcframework.zip"
+          tag: ${{ inputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ inputs.version }}
+          prerelease: true
       - name: Push update to Cocoapods trunk
         working-directory: dist
         env:
