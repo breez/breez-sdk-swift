@@ -7,7 +7,7 @@ let package = Package(
     name: "bindings-swift",
     platforms: [
         .macOS(.v12),
-        .iOS(.v14),
+        .iOS(.v11),
     ],
     products: [
         .library(name: "BreezSDK", targets: ["breez_sdkFFI", "BreezSDK"]),
@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
     ],
     targets: [
-        .binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/0.1.0/breez_sdkFFI.xcframework.zip", checksum: "23c61a2ea24f9b8fb79ef45cfb565dba819edf96699f4969b30e4f996fac8ae4"),
+        .binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/0.1.1/breez_sdkFFI.xcframework.zip", checksum: "87198b6992c547e4a46357fdca0d69dcd8dd9dfe4183badca55722d47b8a1784"),
         .target(name: "BreezSDK", dependencies: ["breez_sdkFFI"]),
     ]
 )
