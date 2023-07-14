@@ -10,7 +10,7 @@ on:
 jobs:
   build-tag-release:
     name: Build, tag, and release the Breez SDK Swift bindings
-    runs-on: macOS-latest
+    runs-on: macos-13
     steps:
       - name: Install required dependencies
         run: |
