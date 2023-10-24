@@ -19,13 +19,13 @@ fileprivate extension RustBuffer {
     }
 
     static func from(_ ptr: UnsafeBufferPointer<UInt8>) -> RustBuffer {
-        try! rustCall { ffi_breez_sdk_c429_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
+        try! rustCall { ffi_breez_sdk_4aa5_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
     }
 
     // Frees the buffer in place.
     // The buffer must not be used after this is called.
     func deallocate() {
-        try! rustCall { ffi_breez_sdk_c429_rustbuffer_free(self, $0) }
+        try! rustCall { ffi_breez_sdk_4aa5_rustbuffer_free(self, $0) }
     }
 }
 
@@ -433,20 +433,20 @@ fileprivate struct FfiConverterString: FfiConverter {
 
 public protocol BlockingBreezServicesProtocol {
     func `disconnect`() throws
-    func `sendPayment`(`bolt11`: String, `amountSats`: UInt64?) throws -> Payment
-    func `sendSpontaneousPayment`(`nodeId`: String, `amountSats`: UInt64) throws -> Payment
-    func `receivePayment`(`reqData`: ReceivePaymentRequest) throws -> ReceivePaymentResponse
-    func `payLnurl`(`reqData`: LnUrlPayRequestData, `amountSats`: UInt64, `comment`: String?) throws -> LnUrlPayResult
-    func `withdrawLnurl`(`reqData`: LnUrlWithdrawRequestData, `amountSats`: UInt64, `description`: String?) throws -> LnUrlWithdrawResult
+    func `sendPayment`(`req`: SendPaymentRequest) throws -> SendPaymentResponse
+    func `sendSpontaneousPayment`(`req`: SendSpontaneousPaymentRequest) throws -> SendPaymentResponse
+    func `receivePayment`(`req`: ReceivePaymentRequest) throws -> ReceivePaymentResponse
+    func `payLnurl`(`req`: LnUrlPayRequest) throws -> LnUrlPayResult
+    func `withdrawLnurl`(`request`: LnUrlWithdrawRequest) throws -> LnUrlWithdrawResult
     func `lnurlAuth`(`reqData`: LnUrlAuthRequestData) throws -> LnUrlCallbackStatus
     func `nodeInfo`() throws -> NodeState
-    func `signMessage`(`request`: SignMessageRequest) throws -> SignMessageResponse
-    func `checkMessage`(`request`: CheckMessageRequest) throws -> CheckMessageResponse
+    func `signMessage`(`req`: SignMessageRequest) throws -> SignMessageResponse
+    func `checkMessage`(`req`: CheckMessageRequest) throws -> CheckMessageResponse
     func `backupStatus`() throws -> BackupStatus
     func `backup`() throws
     func `paymentByHash`(`hash`: String) throws -> Payment?
-    func `listPayments`(`request`: ListPaymentsRequest) throws -> [Payment]
-    func `sweep`(`request`: SweepRequest) throws -> SweepResponse
+    func `listPayments`(`req`: ListPaymentsRequest) throws -> [Payment]
+    func `sweep`(`req`: SweepRequest) throws -> SweepResponse
     func `fetchFiatRates`() throws -> [Rate]
     func `listFiatCurrencies`() throws -> [FiatCurrency]
     func `listLsps`() throws -> [LspInformation]
@@ -459,10 +459,10 @@ public protocol BlockingBreezServicesProtocol {
     func `receiveOnchain`(`req`: ReceiveOnchainRequest) throws -> SwapInfo
     func `inProgressSwap`() throws -> SwapInfo?
     func `listRefundables`() throws -> [SwapInfo]
-    func `refund`(`swapAddress`: String, `toAddress`: String, `satPerVbyte`: UInt32) throws -> String
+    func `refund`(`req`: RefundRequest) throws -> RefundResponse
     func `fetchReverseSwapFees`(`req`: ReverseSwapFeesRequest) throws -> ReverseSwapPairInfo
     func `inProgressReverseSwaps`() throws -> [ReverseSwapInfo]
-    func `sendOnchain`(`amountSat`: UInt64, `onchainRecipientAddress`: String, `pairHash`: String, `satPerVbyte`: UInt64) throws -> ReverseSwapInfo
+    func `sendOnchain`(`req`: SendOnchainRequest) throws -> SendOnchainResponse
     func `executeDevCommand`(`command`: String) throws -> String
     func `sync`() throws
     func `recommendedFees`() throws -> RecommendedFees
@@ -481,7 +481,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     }
 
     deinit {
-        try! rustCall { ffi_breez_sdk_c429_BlockingBreezServices_object_free(pointer, $0) }
+        try! rustCall { ffi_breez_sdk_4aa5_BlockingBreezServices_object_free(pointer, $0) }
     }
 
     
@@ -490,62 +490,56 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `disconnect`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_disconnect(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_disconnect(self.pointer, $0
     )
 }
     }
-    public func `sendPayment`(`bolt11`: String, `amountSats`: UInt64?) throws -> Payment {
-        return try FfiConverterTypePayment.lift(
+    public func `sendPayment`(`req`: SendPaymentRequest) throws -> SendPaymentResponse {
+        return try FfiConverterTypeSendPaymentResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_send_payment(self.pointer, 
-        FfiConverterString.lower(`bolt11`), 
-        FfiConverterOptionUInt64.lower(`amountSats`), $0
+    breez_sdk_4aa5_BlockingBreezServices_send_payment(self.pointer, 
+        FfiConverterTypeSendPaymentRequest.lower(`req`), $0
     )
 }
         )
     }
-    public func `sendSpontaneousPayment`(`nodeId`: String, `amountSats`: UInt64) throws -> Payment {
-        return try FfiConverterTypePayment.lift(
+    public func `sendSpontaneousPayment`(`req`: SendSpontaneousPaymentRequest) throws -> SendPaymentResponse {
+        return try FfiConverterTypeSendPaymentResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_send_spontaneous_payment(self.pointer, 
-        FfiConverterString.lower(`nodeId`), 
-        FfiConverterUInt64.lower(`amountSats`), $0
+    breez_sdk_4aa5_BlockingBreezServices_send_spontaneous_payment(self.pointer, 
+        FfiConverterTypeSendSpontaneousPaymentRequest.lower(`req`), $0
     )
 }
         )
     }
-    public func `receivePayment`(`reqData`: ReceivePaymentRequest) throws -> ReceivePaymentResponse {
+    public func `receivePayment`(`req`: ReceivePaymentRequest) throws -> ReceivePaymentResponse {
         return try FfiConverterTypeReceivePaymentResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_receive_payment(self.pointer, 
-        FfiConverterTypeReceivePaymentRequest.lower(`reqData`), $0
+    breez_sdk_4aa5_BlockingBreezServices_receive_payment(self.pointer, 
+        FfiConverterTypeReceivePaymentRequest.lower(`req`), $0
     )
 }
         )
     }
-    public func `payLnurl`(`reqData`: LnUrlPayRequestData, `amountSats`: UInt64, `comment`: String?) throws -> LnUrlPayResult {
+    public func `payLnurl`(`req`: LnUrlPayRequest) throws -> LnUrlPayResult {
         return try FfiConverterTypeLnUrlPayResult.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_pay_lnurl(self.pointer, 
-        FfiConverterTypeLnUrlPayRequestData.lower(`reqData`), 
-        FfiConverterUInt64.lower(`amountSats`), 
-        FfiConverterOptionString.lower(`comment`), $0
+    breez_sdk_4aa5_BlockingBreezServices_pay_lnurl(self.pointer, 
+        FfiConverterTypeLnUrlPayRequest.lower(`req`), $0
     )
 }
         )
     }
-    public func `withdrawLnurl`(`reqData`: LnUrlWithdrawRequestData, `amountSats`: UInt64, `description`: String?) throws -> LnUrlWithdrawResult {
+    public func `withdrawLnurl`(`request`: LnUrlWithdrawRequest) throws -> LnUrlWithdrawResult {
         return try FfiConverterTypeLnUrlWithdrawResult.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_withdraw_lnurl(self.pointer, 
-        FfiConverterTypeLnUrlWithdrawRequestData.lower(`reqData`), 
-        FfiConverterUInt64.lower(`amountSats`), 
-        FfiConverterOptionString.lower(`description`), $0
+    breez_sdk_4aa5_BlockingBreezServices_withdraw_lnurl(self.pointer, 
+        FfiConverterTypeLnUrlWithdrawRequest.lower(`request`), $0
     )
 }
         )
@@ -554,7 +548,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeLnUrlCallbackStatus.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_lnurl_auth(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_lnurl_auth(self.pointer, 
         FfiConverterTypeLnUrlAuthRequestData.lower(`reqData`), $0
     )
 }
@@ -564,27 +558,27 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeNodeState.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_node_info(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_node_info(self.pointer, $0
     )
 }
         )
     }
-    public func `signMessage`(`request`: SignMessageRequest) throws -> SignMessageResponse {
+    public func `signMessage`(`req`: SignMessageRequest) throws -> SignMessageResponse {
         return try FfiConverterTypeSignMessageResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_sign_message(self.pointer, 
-        FfiConverterTypeSignMessageRequest.lower(`request`), $0
+    breez_sdk_4aa5_BlockingBreezServices_sign_message(self.pointer, 
+        FfiConverterTypeSignMessageRequest.lower(`req`), $0
     )
 }
         )
     }
-    public func `checkMessage`(`request`: CheckMessageRequest) throws -> CheckMessageResponse {
+    public func `checkMessage`(`req`: CheckMessageRequest) throws -> CheckMessageResponse {
         return try FfiConverterTypeCheckMessageResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_check_message(self.pointer, 
-        FfiConverterTypeCheckMessageRequest.lower(`request`), $0
+    breez_sdk_4aa5_BlockingBreezServices_check_message(self.pointer, 
+        FfiConverterTypeCheckMessageRequest.lower(`req`), $0
     )
 }
         )
@@ -593,7 +587,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeBackupStatus.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_backup_status(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_backup_status(self.pointer, $0
     )
 }
         )
@@ -601,7 +595,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `backup`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_backup(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_backup(self.pointer, $0
     )
 }
     }
@@ -609,28 +603,28 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionTypePayment.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_payment_by_hash(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_payment_by_hash(self.pointer, 
         FfiConverterString.lower(`hash`), $0
     )
 }
         )
     }
-    public func `listPayments`(`request`: ListPaymentsRequest) throws -> [Payment] {
+    public func `listPayments`(`req`: ListPaymentsRequest) throws -> [Payment] {
         return try FfiConverterSequenceTypePayment.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_list_payments(self.pointer, 
-        FfiConverterTypeListPaymentsRequest.lower(`request`), $0
+    breez_sdk_4aa5_BlockingBreezServices_list_payments(self.pointer, 
+        FfiConverterTypeListPaymentsRequest.lower(`req`), $0
     )
 }
         )
     }
-    public func `sweep`(`request`: SweepRequest) throws -> SweepResponse {
+    public func `sweep`(`req`: SweepRequest) throws -> SweepResponse {
         return try FfiConverterTypeSweepResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_sweep(self.pointer, 
-        FfiConverterTypeSweepRequest.lower(`request`), $0
+    breez_sdk_4aa5_BlockingBreezServices_sweep(self.pointer, 
+        FfiConverterTypeSweepRequest.lower(`req`), $0
     )
 }
         )
@@ -639,7 +633,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeRate.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_fetch_fiat_rates(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_fetch_fiat_rates(self.pointer, $0
     )
 }
         )
@@ -648,7 +642,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeFiatCurrency.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_list_fiat_currencies(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_list_fiat_currencies(self.pointer, $0
     )
 }
         )
@@ -657,7 +651,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeLspInformation.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_list_lsps(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_list_lsps(self.pointer, $0
     )
 }
         )
@@ -665,7 +659,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `connectLsp`(`lspId`: String) throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_connect_lsp(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_connect_lsp(self.pointer, 
         FfiConverterString.lower(`lspId`), $0
     )
 }
@@ -674,7 +668,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionTypeLspInformation.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_fetch_lsp_info(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_fetch_lsp_info(self.pointer, 
         FfiConverterString.lower(`lspId`), $0
     )
 }
@@ -684,7 +678,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeOpenChannelFeeResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_open_channel_fee(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_open_channel_fee(self.pointer, 
         FfiConverterTypeOpenChannelFeeRequest.lower(`req`), $0
     )
 }
@@ -694,7 +688,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionString.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_lsp_id(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_lsp_id(self.pointer, $0
     )
 }
         )
@@ -703,7 +697,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeLspInformation.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_lsp_info(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_lsp_info(self.pointer, $0
     )
 }
         )
@@ -711,7 +705,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `closeLspChannels`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_close_lsp_channels(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_close_lsp_channels(self.pointer, $0
     )
 }
     }
@@ -719,7 +713,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_receive_onchain(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_receive_onchain(self.pointer, 
         FfiConverterTypeReceiveOnchainRequest.lower(`req`), $0
     )
 }
@@ -729,7 +723,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionTypeSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_in_progress_swap(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_in_progress_swap(self.pointer, $0
     )
 }
         )
@@ -738,19 +732,17 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_list_refundables(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_list_refundables(self.pointer, $0
     )
 }
         )
     }
-    public func `refund`(`swapAddress`: String, `toAddress`: String, `satPerVbyte`: UInt32) throws -> String {
-        return try FfiConverterString.lift(
+    public func `refund`(`req`: RefundRequest) throws -> RefundResponse {
+        return try FfiConverterTypeRefundResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_refund(self.pointer, 
-        FfiConverterString.lower(`swapAddress`), 
-        FfiConverterString.lower(`toAddress`), 
-        FfiConverterUInt32.lower(`satPerVbyte`), $0
+    breez_sdk_4aa5_BlockingBreezServices_refund(self.pointer, 
+        FfiConverterTypeRefundRequest.lower(`req`), $0
     )
 }
         )
@@ -759,7 +751,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeReverseSwapPairInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_fetch_reverse_swap_fees(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_fetch_reverse_swap_fees(self.pointer, 
         FfiConverterTypeReverseSwapFeesRequest.lower(`req`), $0
     )
 }
@@ -769,20 +761,17 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeReverseSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_in_progress_reverse_swaps(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_in_progress_reverse_swaps(self.pointer, $0
     )
 }
         )
     }
-    public func `sendOnchain`(`amountSat`: UInt64, `onchainRecipientAddress`: String, `pairHash`: String, `satPerVbyte`: UInt64) throws -> ReverseSwapInfo {
-        return try FfiConverterTypeReverseSwapInfo.lift(
+    public func `sendOnchain`(`req`: SendOnchainRequest) throws -> SendOnchainResponse {
+        return try FfiConverterTypeSendOnchainResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_send_onchain(self.pointer, 
-        FfiConverterUInt64.lower(`amountSat`), 
-        FfiConverterString.lower(`onchainRecipientAddress`), 
-        FfiConverterString.lower(`pairHash`), 
-        FfiConverterUInt64.lower(`satPerVbyte`), $0
+    breez_sdk_4aa5_BlockingBreezServices_send_onchain(self.pointer, 
+        FfiConverterTypeSendOnchainRequest.lower(`req`), $0
     )
 }
         )
@@ -791,7 +780,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterString.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_execute_dev_command(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_execute_dev_command(self.pointer, 
         FfiConverterString.lower(`command`), $0
     )
 }
@@ -800,7 +789,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `sync`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_sync(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_sync(self.pointer, $0
     )
 }
     }
@@ -808,7 +797,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeRecommendedFees.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_recommended_fees(self.pointer, $0
+    breez_sdk_4aa5_BlockingBreezServices_recommended_fees(self.pointer, $0
     )
 }
         )
@@ -817,7 +806,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeBuyBitcoinResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_c429_BlockingBreezServices_buy_bitcoin(self.pointer, 
+    breez_sdk_4aa5_BlockingBreezServices_buy_bitcoin(self.pointer, 
         FfiConverterTypeBuyBitcoinRequest.lower(`req`), $0
     )
 }
@@ -1318,13 +1307,15 @@ public struct ClosedChannelPaymentDetails {
     public var `shortChannelId`: String
     public var `state`: ChannelState
     public var `fundingTxid`: String
+    public var `closingTxid`: String?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(`shortChannelId`: String, `state`: ChannelState, `fundingTxid`: String) {
+    public init(`shortChannelId`: String, `state`: ChannelState, `fundingTxid`: String, `closingTxid`: String?) {
         self.`shortChannelId` = `shortChannelId`
         self.`state` = `state`
         self.`fundingTxid` = `fundingTxid`
+        self.`closingTxid` = `closingTxid`
     }
 }
 
@@ -1340,6 +1331,9 @@ extension ClosedChannelPaymentDetails: Equatable, Hashable {
         if lhs.`fundingTxid` != rhs.`fundingTxid` {
             return false
         }
+        if lhs.`closingTxid` != rhs.`closingTxid` {
+            return false
+        }
         return true
     }
 
@@ -1347,6 +1341,7 @@ extension ClosedChannelPaymentDetails: Equatable, Hashable {
         hasher.combine(`shortChannelId`)
         hasher.combine(`state`)
         hasher.combine(`fundingTxid`)
+        hasher.combine(`closingTxid`)
     }
 }
 
@@ -1356,7 +1351,8 @@ public struct FfiConverterTypeClosedChannelPaymentDetails: FfiConverterRustBuffe
         return try ClosedChannelPaymentDetails(
             `shortChannelId`: FfiConverterString.read(from: &buf), 
             `state`: FfiConverterTypeChannelState.read(from: &buf), 
-            `fundingTxid`: FfiConverterString.read(from: &buf)
+            `fundingTxid`: FfiConverterString.read(from: &buf), 
+            `closingTxid`: FfiConverterOptionString.read(from: &buf)
         )
     }
 
@@ -1364,6 +1360,7 @@ public struct FfiConverterTypeClosedChannelPaymentDetails: FfiConverterRustBuffe
         FfiConverterString.write(value.`shortChannelId`, into: &buf)
         FfiConverterTypeChannelState.write(value.`state`, into: &buf)
         FfiConverterString.write(value.`fundingTxid`, into: &buf)
+        FfiConverterOptionString.write(value.`closingTxid`, into: &buf)
     }
 }
 
@@ -1935,14 +1932,18 @@ public struct ListPaymentsRequest {
     public var `fromTimestamp`: Int64?
     public var `toTimestamp`: Int64?
     public var `includeFailures`: Bool?
+    public var `offset`: UInt32?
+    public var `limit`: UInt32?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(`filter`: PaymentTypeFilter, `fromTimestamp`: Int64? = nil, `toTimestamp`: Int64? = nil, `includeFailures`: Bool? = nil) {
+    public init(`filter`: PaymentTypeFilter, `fromTimestamp`: Int64? = nil, `toTimestamp`: Int64? = nil, `includeFailures`: Bool? = nil, `offset`: UInt32? = nil, `limit`: UInt32? = nil) {
         self.`filter` = `filter`
         self.`fromTimestamp` = `fromTimestamp`
         self.`toTimestamp` = `toTimestamp`
         self.`includeFailures` = `includeFailures`
+        self.`offset` = `offset`
+        self.`limit` = `limit`
     }
 }
 
@@ -1961,6 +1962,12 @@ extension ListPaymentsRequest: Equatable, Hashable {
         if lhs.`includeFailures` != rhs.`includeFailures` {
             return false
         }
+        if lhs.`offset` != rhs.`offset` {
+            return false
+        }
+        if lhs.`limit` != rhs.`limit` {
+            return false
+        }
         return true
     }
 
@@ -1969,6 +1976,8 @@ extension ListPaymentsRequest: Equatable, Hashable {
         hasher.combine(`fromTimestamp`)
         hasher.combine(`toTimestamp`)
         hasher.combine(`includeFailures`)
+        hasher.combine(`offset`)
+        hasher.combine(`limit`)
     }
 }
 
@@ -1979,7 +1988,9 @@ public struct FfiConverterTypeListPaymentsRequest: FfiConverterRustBuffer {
             `filter`: FfiConverterTypePaymentTypeFilter.read(from: &buf), 
             `fromTimestamp`: FfiConverterOptionInt64.read(from: &buf), 
             `toTimestamp`: FfiConverterOptionInt64.read(from: &buf), 
-            `includeFailures`: FfiConverterOptionBool.read(from: &buf)
+            `includeFailures`: FfiConverterOptionBool.read(from: &buf), 
+            `offset`: FfiConverterOptionUInt32.read(from: &buf), 
+            `limit`: FfiConverterOptionUInt32.read(from: &buf)
         )
     }
 
@@ -1988,6 +1999,8 @@ public struct FfiConverterTypeListPaymentsRequest: FfiConverterRustBuffer {
         FfiConverterOptionInt64.write(value.`fromTimestamp`, into: &buf)
         FfiConverterOptionInt64.write(value.`toTimestamp`, into: &buf)
         FfiConverterOptionBool.write(value.`includeFailures`, into: &buf)
+        FfiConverterOptionUInt32.write(value.`offset`, into: &buf)
+        FfiConverterOptionUInt32.write(value.`limit`, into: &buf)
     }
 }
 
@@ -2238,6 +2251,69 @@ public func FfiConverterTypeLnUrlErrorData_lower(_ value: LnUrlErrorData) -> Rus
 }
 
 
+public struct LnUrlPayRequest {
+    public var `data`: LnUrlPayRequestData
+    public var `amountMsat`: UInt64
+    public var `comment`: String?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`data`: LnUrlPayRequestData, `amountMsat`: UInt64, `comment`: String?) {
+        self.`data` = `data`
+        self.`amountMsat` = `amountMsat`
+        self.`comment` = `comment`
+    }
+}
+
+
+extension LnUrlPayRequest: Equatable, Hashable {
+    public static func ==(lhs: LnUrlPayRequest, rhs: LnUrlPayRequest) -> Bool {
+        if lhs.`data` != rhs.`data` {
+            return false
+        }
+        if lhs.`amountMsat` != rhs.`amountMsat` {
+            return false
+        }
+        if lhs.`comment` != rhs.`comment` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`data`)
+        hasher.combine(`amountMsat`)
+        hasher.combine(`comment`)
+    }
+}
+
+
+public struct FfiConverterTypeLnUrlPayRequest: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LnUrlPayRequest {
+        return try LnUrlPayRequest(
+            `data`: FfiConverterTypeLnUrlPayRequestData.read(from: &buf), 
+            `amountMsat`: FfiConverterUInt64.read(from: &buf), 
+            `comment`: FfiConverterOptionString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: LnUrlPayRequest, into buf: inout [UInt8]) {
+        FfiConverterTypeLnUrlPayRequestData.write(value.`data`, into: &buf)
+        FfiConverterUInt64.write(value.`amountMsat`, into: &buf)
+        FfiConverterOptionString.write(value.`comment`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeLnUrlPayRequest_lift(_ buf: RustBuffer) throws -> LnUrlPayRequest {
+    return try FfiConverterTypeLnUrlPayRequest.lift(buf)
+}
+
+public func FfiConverterTypeLnUrlPayRequest_lower(_ value: LnUrlPayRequest) -> RustBuffer {
+    return FfiConverterTypeLnUrlPayRequest.lower(value)
+}
+
+
 public struct LnUrlPayRequestData {
     public var `callback`: String
     public var `minSendable`: UInt64
@@ -2330,6 +2406,69 @@ public func FfiConverterTypeLnUrlPayRequestData_lift(_ buf: RustBuffer) throws -
 
 public func FfiConverterTypeLnUrlPayRequestData_lower(_ value: LnUrlPayRequestData) -> RustBuffer {
     return FfiConverterTypeLnUrlPayRequestData.lower(value)
+}
+
+
+public struct LnUrlWithdrawRequest {
+    public var `data`: LnUrlWithdrawRequestData
+    public var `amountMsat`: UInt64
+    public var `description`: String?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`data`: LnUrlWithdrawRequestData, `amountMsat`: UInt64, `description`: String? = nil) {
+        self.`data` = `data`
+        self.`amountMsat` = `amountMsat`
+        self.`description` = `description`
+    }
+}
+
+
+extension LnUrlWithdrawRequest: Equatable, Hashable {
+    public static func ==(lhs: LnUrlWithdrawRequest, rhs: LnUrlWithdrawRequest) -> Bool {
+        if lhs.`data` != rhs.`data` {
+            return false
+        }
+        if lhs.`amountMsat` != rhs.`amountMsat` {
+            return false
+        }
+        if lhs.`description` != rhs.`description` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`data`)
+        hasher.combine(`amountMsat`)
+        hasher.combine(`description`)
+    }
+}
+
+
+public struct FfiConverterTypeLnUrlWithdrawRequest: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LnUrlWithdrawRequest {
+        return try LnUrlWithdrawRequest(
+            `data`: FfiConverterTypeLnUrlWithdrawRequestData.read(from: &buf), 
+            `amountMsat`: FfiConverterUInt64.read(from: &buf), 
+            `description`: FfiConverterOptionString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: LnUrlWithdrawRequest, into buf: inout [UInt8]) {
+        FfiConverterTypeLnUrlWithdrawRequestData.write(value.`data`, into: &buf)
+        FfiConverterUInt64.write(value.`amountMsat`, into: &buf)
+        FfiConverterOptionString.write(value.`description`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeLnUrlWithdrawRequest_lift(_ buf: RustBuffer) throws -> LnUrlWithdrawRequest {
+    return try FfiConverterTypeLnUrlWithdrawRequest.lift(buf)
+}
+
+public func FfiConverterTypeLnUrlWithdrawRequest_lower(_ value: LnUrlWithdrawRequest) -> RustBuffer {
+    return FfiConverterTypeLnUrlWithdrawRequest.lower(value)
 }
 
 
@@ -3517,7 +3656,7 @@ public func FfiConverterTypeReceiveOnchainRequest_lower(_ value: ReceiveOnchainR
 
 
 public struct ReceivePaymentRequest {
-    public var `amountSats`: UInt64
+    public var `amountMsat`: UInt64
     public var `description`: String
     public var `preimage`: [UInt8]?
     public var `openingFeeParams`: OpeningFeeParams?
@@ -3527,8 +3666,8 @@ public struct ReceivePaymentRequest {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(`amountSats`: UInt64, `description`: String, `preimage`: [UInt8]? = nil, `openingFeeParams`: OpeningFeeParams? = nil, `useDescriptionHash`: Bool? = nil, `expiry`: UInt32? = nil, `cltv`: UInt32? = nil) {
-        self.`amountSats` = `amountSats`
+    public init(`amountMsat`: UInt64, `description`: String, `preimage`: [UInt8]? = nil, `openingFeeParams`: OpeningFeeParams? = nil, `useDescriptionHash`: Bool? = nil, `expiry`: UInt32? = nil, `cltv`: UInt32? = nil) {
+        self.`amountMsat` = `amountMsat`
         self.`description` = `description`
         self.`preimage` = `preimage`
         self.`openingFeeParams` = `openingFeeParams`
@@ -3541,7 +3680,7 @@ public struct ReceivePaymentRequest {
 
 extension ReceivePaymentRequest: Equatable, Hashable {
     public static func ==(lhs: ReceivePaymentRequest, rhs: ReceivePaymentRequest) -> Bool {
-        if lhs.`amountSats` != rhs.`amountSats` {
+        if lhs.`amountMsat` != rhs.`amountMsat` {
             return false
         }
         if lhs.`description` != rhs.`description` {
@@ -3566,7 +3705,7 @@ extension ReceivePaymentRequest: Equatable, Hashable {
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(`amountSats`)
+        hasher.combine(`amountMsat`)
         hasher.combine(`description`)
         hasher.combine(`preimage`)
         hasher.combine(`openingFeeParams`)
@@ -3580,7 +3719,7 @@ extension ReceivePaymentRequest: Equatable, Hashable {
 public struct FfiConverterTypeReceivePaymentRequest: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ReceivePaymentRequest {
         return try ReceivePaymentRequest(
-            `amountSats`: FfiConverterUInt64.read(from: &buf), 
+            `amountMsat`: FfiConverterUInt64.read(from: &buf), 
             `description`: FfiConverterString.read(from: &buf), 
             `preimage`: FfiConverterOptionSequenceUInt8.read(from: &buf), 
             `openingFeeParams`: FfiConverterOptionTypeOpeningFeeParams.read(from: &buf), 
@@ -3591,7 +3730,7 @@ public struct FfiConverterTypeReceivePaymentRequest: FfiConverterRustBuffer {
     }
 
     public static func write(_ value: ReceivePaymentRequest, into buf: inout [UInt8]) {
-        FfiConverterUInt64.write(value.`amountSats`, into: &buf)
+        FfiConverterUInt64.write(value.`amountMsat`, into: &buf)
         FfiConverterString.write(value.`description`, into: &buf)
         FfiConverterOptionSequenceUInt8.write(value.`preimage`, into: &buf)
         FfiConverterOptionTypeOpeningFeeParams.write(value.`openingFeeParams`, into: &buf)
@@ -3753,6 +3892,116 @@ public func FfiConverterTypeRecommendedFees_lower(_ value: RecommendedFees) -> R
 }
 
 
+public struct RefundRequest {
+    public var `swapAddress`: String
+    public var `toAddress`: String
+    public var `satPerVbyte`: UInt32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`swapAddress`: String, `toAddress`: String, `satPerVbyte`: UInt32) {
+        self.`swapAddress` = `swapAddress`
+        self.`toAddress` = `toAddress`
+        self.`satPerVbyte` = `satPerVbyte`
+    }
+}
+
+
+extension RefundRequest: Equatable, Hashable {
+    public static func ==(lhs: RefundRequest, rhs: RefundRequest) -> Bool {
+        if lhs.`swapAddress` != rhs.`swapAddress` {
+            return false
+        }
+        if lhs.`toAddress` != rhs.`toAddress` {
+            return false
+        }
+        if lhs.`satPerVbyte` != rhs.`satPerVbyte` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`swapAddress`)
+        hasher.combine(`toAddress`)
+        hasher.combine(`satPerVbyte`)
+    }
+}
+
+
+public struct FfiConverterTypeRefundRequest: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RefundRequest {
+        return try RefundRequest(
+            `swapAddress`: FfiConverterString.read(from: &buf), 
+            `toAddress`: FfiConverterString.read(from: &buf), 
+            `satPerVbyte`: FfiConverterUInt32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: RefundRequest, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.`swapAddress`, into: &buf)
+        FfiConverterString.write(value.`toAddress`, into: &buf)
+        FfiConverterUInt32.write(value.`satPerVbyte`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeRefundRequest_lift(_ buf: RustBuffer) throws -> RefundRequest {
+    return try FfiConverterTypeRefundRequest.lift(buf)
+}
+
+public func FfiConverterTypeRefundRequest_lower(_ value: RefundRequest) -> RustBuffer {
+    return FfiConverterTypeRefundRequest.lower(value)
+}
+
+
+public struct RefundResponse {
+    public var `refundTxId`: String
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`refundTxId`: String) {
+        self.`refundTxId` = `refundTxId`
+    }
+}
+
+
+extension RefundResponse: Equatable, Hashable {
+    public static func ==(lhs: RefundResponse, rhs: RefundResponse) -> Bool {
+        if lhs.`refundTxId` != rhs.`refundTxId` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`refundTxId`)
+    }
+}
+
+
+public struct FfiConverterTypeRefundResponse: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RefundResponse {
+        return try RefundResponse(
+            `refundTxId`: FfiConverterString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: RefundResponse, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.`refundTxId`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeRefundResponse_lift(_ buf: RustBuffer) throws -> RefundResponse {
+    return try FfiConverterTypeRefundResponse.lift(buf)
+}
+
+public func FfiConverterTypeRefundResponse_lower(_ value: RefundResponse) -> RustBuffer {
+    return FfiConverterTypeRefundResponse.lower(value)
+}
+
+
 public struct ReverseSwapFeesRequest {
     public var `sendAmountSat`: UInt64?
 
@@ -3803,14 +4052,18 @@ public func FfiConverterTypeReverseSwapFeesRequest_lower(_ value: ReverseSwapFee
 public struct ReverseSwapInfo {
     public var `id`: String
     public var `claimPubkey`: String
+    public var `lockupTxid`: String?
+    public var `claimTxid`: String?
     public var `onchainAmountSat`: UInt64
     public var `status`: ReverseSwapStatus
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(`id`: String, `claimPubkey`: String, `onchainAmountSat`: UInt64, `status`: ReverseSwapStatus) {
+    public init(`id`: String, `claimPubkey`: String, `lockupTxid`: String?, `claimTxid`: String?, `onchainAmountSat`: UInt64, `status`: ReverseSwapStatus) {
         self.`id` = `id`
         self.`claimPubkey` = `claimPubkey`
+        self.`lockupTxid` = `lockupTxid`
+        self.`claimTxid` = `claimTxid`
         self.`onchainAmountSat` = `onchainAmountSat`
         self.`status` = `status`
     }
@@ -3825,6 +4078,12 @@ extension ReverseSwapInfo: Equatable, Hashable {
         if lhs.`claimPubkey` != rhs.`claimPubkey` {
             return false
         }
+        if lhs.`lockupTxid` != rhs.`lockupTxid` {
+            return false
+        }
+        if lhs.`claimTxid` != rhs.`claimTxid` {
+            return false
+        }
         if lhs.`onchainAmountSat` != rhs.`onchainAmountSat` {
             return false
         }
@@ -3837,6 +4096,8 @@ extension ReverseSwapInfo: Equatable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(`id`)
         hasher.combine(`claimPubkey`)
+        hasher.combine(`lockupTxid`)
+        hasher.combine(`claimTxid`)
         hasher.combine(`onchainAmountSat`)
         hasher.combine(`status`)
     }
@@ -3848,6 +4109,8 @@ public struct FfiConverterTypeReverseSwapInfo: FfiConverterRustBuffer {
         return try ReverseSwapInfo(
             `id`: FfiConverterString.read(from: &buf), 
             `claimPubkey`: FfiConverterString.read(from: &buf), 
+            `lockupTxid`: FfiConverterOptionString.read(from: &buf), 
+            `claimTxid`: FfiConverterOptionString.read(from: &buf), 
             `onchainAmountSat`: FfiConverterUInt64.read(from: &buf), 
             `status`: FfiConverterTypeReverseSwapStatus.read(from: &buf)
         )
@@ -3856,6 +4119,8 @@ public struct FfiConverterTypeReverseSwapInfo: FfiConverterRustBuffer {
     public static func write(_ value: ReverseSwapInfo, into buf: inout [UInt8]) {
         FfiConverterString.write(value.`id`, into: &buf)
         FfiConverterString.write(value.`claimPubkey`, into: &buf)
+        FfiConverterOptionString.write(value.`lockupTxid`, into: &buf)
+        FfiConverterOptionString.write(value.`claimTxid`, into: &buf)
         FfiConverterUInt64.write(value.`onchainAmountSat`, into: &buf)
         FfiConverterTypeReverseSwapStatus.write(value.`status`, into: &buf)
     }
@@ -4105,6 +4370,281 @@ public func FfiConverterTypeRouteHintHop_lift(_ buf: RustBuffer) throws -> Route
 
 public func FfiConverterTypeRouteHintHop_lower(_ value: RouteHintHop) -> RustBuffer {
     return FfiConverterTypeRouteHintHop.lower(value)
+}
+
+
+public struct SendOnchainRequest {
+    public var `amountSat`: UInt64
+    public var `onchainRecipientAddress`: String
+    public var `pairHash`: String
+    public var `satPerVbyte`: UInt32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`amountSat`: UInt64, `onchainRecipientAddress`: String, `pairHash`: String, `satPerVbyte`: UInt32) {
+        self.`amountSat` = `amountSat`
+        self.`onchainRecipientAddress` = `onchainRecipientAddress`
+        self.`pairHash` = `pairHash`
+        self.`satPerVbyte` = `satPerVbyte`
+    }
+}
+
+
+extension SendOnchainRequest: Equatable, Hashable {
+    public static func ==(lhs: SendOnchainRequest, rhs: SendOnchainRequest) -> Bool {
+        if lhs.`amountSat` != rhs.`amountSat` {
+            return false
+        }
+        if lhs.`onchainRecipientAddress` != rhs.`onchainRecipientAddress` {
+            return false
+        }
+        if lhs.`pairHash` != rhs.`pairHash` {
+            return false
+        }
+        if lhs.`satPerVbyte` != rhs.`satPerVbyte` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`amountSat`)
+        hasher.combine(`onchainRecipientAddress`)
+        hasher.combine(`pairHash`)
+        hasher.combine(`satPerVbyte`)
+    }
+}
+
+
+public struct FfiConverterTypeSendOnchainRequest: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SendOnchainRequest {
+        return try SendOnchainRequest(
+            `amountSat`: FfiConverterUInt64.read(from: &buf), 
+            `onchainRecipientAddress`: FfiConverterString.read(from: &buf), 
+            `pairHash`: FfiConverterString.read(from: &buf), 
+            `satPerVbyte`: FfiConverterUInt32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: SendOnchainRequest, into buf: inout [UInt8]) {
+        FfiConverterUInt64.write(value.`amountSat`, into: &buf)
+        FfiConverterString.write(value.`onchainRecipientAddress`, into: &buf)
+        FfiConverterString.write(value.`pairHash`, into: &buf)
+        FfiConverterUInt32.write(value.`satPerVbyte`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeSendOnchainRequest_lift(_ buf: RustBuffer) throws -> SendOnchainRequest {
+    return try FfiConverterTypeSendOnchainRequest.lift(buf)
+}
+
+public func FfiConverterTypeSendOnchainRequest_lower(_ value: SendOnchainRequest) -> RustBuffer {
+    return FfiConverterTypeSendOnchainRequest.lower(value)
+}
+
+
+public struct SendOnchainResponse {
+    public var `reverseSwapInfo`: ReverseSwapInfo
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`reverseSwapInfo`: ReverseSwapInfo) {
+        self.`reverseSwapInfo` = `reverseSwapInfo`
+    }
+}
+
+
+extension SendOnchainResponse: Equatable, Hashable {
+    public static func ==(lhs: SendOnchainResponse, rhs: SendOnchainResponse) -> Bool {
+        if lhs.`reverseSwapInfo` != rhs.`reverseSwapInfo` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`reverseSwapInfo`)
+    }
+}
+
+
+public struct FfiConverterTypeSendOnchainResponse: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SendOnchainResponse {
+        return try SendOnchainResponse(
+            `reverseSwapInfo`: FfiConverterTypeReverseSwapInfo.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: SendOnchainResponse, into buf: inout [UInt8]) {
+        FfiConverterTypeReverseSwapInfo.write(value.`reverseSwapInfo`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeSendOnchainResponse_lift(_ buf: RustBuffer) throws -> SendOnchainResponse {
+    return try FfiConverterTypeSendOnchainResponse.lift(buf)
+}
+
+public func FfiConverterTypeSendOnchainResponse_lower(_ value: SendOnchainResponse) -> RustBuffer {
+    return FfiConverterTypeSendOnchainResponse.lower(value)
+}
+
+
+public struct SendPaymentRequest {
+    public var `bolt11`: String
+    public var `amountMsat`: UInt64?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`bolt11`: String, `amountMsat`: UInt64?) {
+        self.`bolt11` = `bolt11`
+        self.`amountMsat` = `amountMsat`
+    }
+}
+
+
+extension SendPaymentRequest: Equatable, Hashable {
+    public static func ==(lhs: SendPaymentRequest, rhs: SendPaymentRequest) -> Bool {
+        if lhs.`bolt11` != rhs.`bolt11` {
+            return false
+        }
+        if lhs.`amountMsat` != rhs.`amountMsat` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`bolt11`)
+        hasher.combine(`amountMsat`)
+    }
+}
+
+
+public struct FfiConverterTypeSendPaymentRequest: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SendPaymentRequest {
+        return try SendPaymentRequest(
+            `bolt11`: FfiConverterString.read(from: &buf), 
+            `amountMsat`: FfiConverterOptionUInt64.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: SendPaymentRequest, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.`bolt11`, into: &buf)
+        FfiConverterOptionUInt64.write(value.`amountMsat`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeSendPaymentRequest_lift(_ buf: RustBuffer) throws -> SendPaymentRequest {
+    return try FfiConverterTypeSendPaymentRequest.lift(buf)
+}
+
+public func FfiConverterTypeSendPaymentRequest_lower(_ value: SendPaymentRequest) -> RustBuffer {
+    return FfiConverterTypeSendPaymentRequest.lower(value)
+}
+
+
+public struct SendPaymentResponse {
+    public var `payment`: Payment
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`payment`: Payment) {
+        self.`payment` = `payment`
+    }
+}
+
+
+extension SendPaymentResponse: Equatable, Hashable {
+    public static func ==(lhs: SendPaymentResponse, rhs: SendPaymentResponse) -> Bool {
+        if lhs.`payment` != rhs.`payment` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`payment`)
+    }
+}
+
+
+public struct FfiConverterTypeSendPaymentResponse: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SendPaymentResponse {
+        return try SendPaymentResponse(
+            `payment`: FfiConverterTypePayment.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: SendPaymentResponse, into buf: inout [UInt8]) {
+        FfiConverterTypePayment.write(value.`payment`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeSendPaymentResponse_lift(_ buf: RustBuffer) throws -> SendPaymentResponse {
+    return try FfiConverterTypeSendPaymentResponse.lift(buf)
+}
+
+public func FfiConverterTypeSendPaymentResponse_lower(_ value: SendPaymentResponse) -> RustBuffer {
+    return FfiConverterTypeSendPaymentResponse.lower(value)
+}
+
+
+public struct SendSpontaneousPaymentRequest {
+    public var `nodeId`: String
+    public var `amountMsat`: UInt64
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(`nodeId`: String, `amountMsat`: UInt64) {
+        self.`nodeId` = `nodeId`
+        self.`amountMsat` = `amountMsat`
+    }
+}
+
+
+extension SendSpontaneousPaymentRequest: Equatable, Hashable {
+    public static func ==(lhs: SendSpontaneousPaymentRequest, rhs: SendSpontaneousPaymentRequest) -> Bool {
+        if lhs.`nodeId` != rhs.`nodeId` {
+            return false
+        }
+        if lhs.`amountMsat` != rhs.`amountMsat` {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(`nodeId`)
+        hasher.combine(`amountMsat`)
+    }
+}
+
+
+public struct FfiConverterTypeSendSpontaneousPaymentRequest: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SendSpontaneousPaymentRequest {
+        return try SendSpontaneousPaymentRequest(
+            `nodeId`: FfiConverterString.read(from: &buf), 
+            `amountMsat`: FfiConverterUInt64.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: SendSpontaneousPaymentRequest, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.`nodeId`, into: &buf)
+        FfiConverterUInt64.write(value.`amountMsat`, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeSendSpontaneousPaymentRequest_lift(_ buf: RustBuffer) throws -> SendSpontaneousPaymentRequest {
+    return try FfiConverterTypeSendSpontaneousPaymentRequest.lift(buf)
+}
+
+public func FfiConverterTypeSendSpontaneousPaymentRequest_lower(_ value: SendSpontaneousPaymentRequest) -> RustBuffer {
+    return FfiConverterTypeSendSpontaneousPaymentRequest.lower(value)
 }
 
 
@@ -6208,7 +6748,7 @@ fileprivate struct FfiConverterCallbackInterfaceEventListener {
     private static var callbackInitialized = false
     private static func initCallback() {
         try! rustCall { (err: UnsafeMutablePointer<RustCallStatus>) in
-                ffi_breez_sdk_c429_EventListener_init_callback(foreignCallbackCallbackInterfaceEventListener, err)
+                ffi_breez_sdk_4aa5_EventListener_init_callback(foreignCallbackCallbackInterfaceEventListener, err)
         }
     }
     private static func ensureCallbackinitialized() {
@@ -6322,7 +6862,7 @@ fileprivate struct FfiConverterCallbackInterfaceLogStream {
     private static var callbackInitialized = false
     private static func initCallback() {
         try! rustCall { (err: UnsafeMutablePointer<RustCallStatus>) in
-                ffi_breez_sdk_c429_LogStream_init_callback(foreignCallbackCallbackInterfaceLogStream, err)
+                ffi_breez_sdk_4aa5_LogStream_init_callback(foreignCallbackCallbackInterfaceLogStream, err)
         }
     }
     private static func ensureCallbackinitialized() {
@@ -7040,7 +7580,7 @@ public func `connect`(`config`: Config, `seed`: [UInt8], `listener`: EventListen
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_c429_connect(
+    breez_sdk_4aa5_connect(
         FfiConverterTypeConfig.lower(`config`), 
         FfiConverterSequenceUInt8.lower(`seed`), 
         FfiConverterCallbackInterfaceEventListener.lower(`listener`), $0)
@@ -7055,7 +7595,7 @@ public func `setLogStream`(`logStream`: LogStream) throws {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_c429_set_log_stream(
+    breez_sdk_4aa5_set_log_stream(
         FfiConverterCallbackInterfaceLogStream.lower(`logStream`), $0)
 }
 }
@@ -7067,7 +7607,7 @@ public func `parseInvoice`(`invoice`: String) throws -> LnInvoice {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_c429_parse_invoice(
+    breez_sdk_4aa5_parse_invoice(
         FfiConverterString.lower(`invoice`), $0)
 }
     )
@@ -7081,7 +7621,7 @@ public func `parseInput`(`s`: String) throws -> InputType {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_c429_parse_input(
+    breez_sdk_4aa5_parse_input(
         FfiConverterString.lower(`s`), $0)
 }
     )
@@ -7095,7 +7635,7 @@ public func `mnemonicToSeed`(`phrase`: String) throws -> [UInt8] {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_c429_mnemonic_to_seed(
+    breez_sdk_4aa5_mnemonic_to_seed(
         FfiConverterString.lower(`phrase`), $0)
 }
     )
@@ -7109,7 +7649,7 @@ public func `defaultConfig`(`envType`: EnvironmentType, `apiKey`: String, `nodeC
     
     rustCall() {
     
-    breez_sdk_c429_default_config(
+    breez_sdk_4aa5_default_config(
         FfiConverterTypeEnvironmentType.lower(`envType`), 
         FfiConverterString.lower(`apiKey`), 
         FfiConverterTypeNodeConfig.lower(`nodeConfig`), $0)
@@ -7119,14 +7659,14 @@ public func `defaultConfig`(`envType`: EnvironmentType, `apiKey`: String, `nodeC
 
 
 
-public func `staticBackup`(`request`: StaticBackupRequest) throws -> StaticBackupResponse {
+public func `staticBackup`(`req`: StaticBackupRequest) throws -> StaticBackupResponse {
     return try FfiConverterTypeStaticBackupResponse.lift(
         try
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_c429_static_backup(
-        FfiConverterTypeStaticBackupRequest.lower(`request`), $0)
+    breez_sdk_4aa5_static_backup(
+        FfiConverterTypeStaticBackupRequest.lower(`req`), $0)
 }
     )
 }
