@@ -7,9 +7,15 @@ Pod::Spec.new do |spec|
   spec.authors                = { "Breez" => "contact@breez.technology" }
   spec.documentation_url      = "https://sdk-doc.breez.technology"
   spec.source                 = { :git => 'https://github.com/breez/breez-sdk-swift.git', :tag => spec.version }
-  spec.ios.deployment_target  = "11.0"
-  spec.source_files           = "Sources/BreezSDK/BreezSDK.swift"
+  spec.ios.deployment_target  = "14.0"
+  spec.source_files           = [
+    "Sources/BreezSDK/BreezSDK.swift", 
+    "Sources/BreezSDKNotification/*.swift", 
+    "Sources/BreezSDKNotification/**/*.swift"
+  ]
   spec.static_framework       = true
 
   spec.dependency "breez_sdkFFI", "= #{spec.version}"
+  spec.dependency "KeychainAccess", ">= 4.2.2"
+  spec.dependency "XCGLogger", ">= 7.0.0"
 end
