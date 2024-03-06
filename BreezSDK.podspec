@@ -16,6 +16,4 @@ Pod::Spec.new do |spec|
   spec.static_framework       = true
 
   spec.dependency "breez_sdkFFI", "= #{spec.version}"
-  spec.dependency "KeychainAccess", ">= 4.2.2"
-  spec.dependency "XCGLogger", ">= 7.0.0"
 end
