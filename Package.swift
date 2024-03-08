@@ -10,12 +10,12 @@ let package = Package(
         .iOS(.v11),
     ],
     products: [
-        .library(name: "BreezSDK", targets: ["breez_sdkFFI", "BreezSDK"]),
+        .library(name: "BreezSDK", targets: ["breez_sdkFFI", "BreezSDK", "BreezSDKNotification"]),
     ],
-    dependencies: [
-    ],
+    dependencies: [],
     targets: [
         .binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/0.3.2/breez_sdkFFI.xcframework.zip", checksum: "6d5eaa9eacac1ee4680d56300e6fb6ec91ccffde8b2052a93593781de3ef8c11"),
         .target(name: "BreezSDK", dependencies: ["breez_sdkFFI"]),
+        .target(name: "BreezSDKNotification", dependencies: ["BreezSDK"]),
     ]
 )
