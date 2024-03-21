@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
     ],
     targets: [
-        .binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/0.3.7/breez_sdkFFI.xcframework.zip", checksum: "4007e759277fd9755784085c065f149de7a0b3607f28d40b94e2f933b61a9a6a"),
+        .binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/0.3.8/breez_sdkFFI.xcframework.zip", checksum: "36ac1bd82b6505a3fea74dc497bf4079226e9be66b842b3b5720d1d7773b06e7"),
         .target(name: "BreezSDK", dependencies: ["breez_sdkFFI"]),
     ]
 )
