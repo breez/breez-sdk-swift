@@ -9,9 +9,8 @@ Pod::Spec.new do |spec|
   spec.source                 = { :git => 'https://github.com/breez/breez-sdk-swift.git', :tag => spec.version }
   spec.ios.deployment_target  = "11.0"
   spec.source_files           = [
-    "Sources/BreezSDK/BreezSDK.swift", 
-    "Sources/BreezSDKNotification/*.swift", 
-    "Sources/BreezSDKNotification/**/*.swift"
+    "Sources/BreezSDK/*.swift", 
+    "Sources/BreezSDK/**/*.swift"
   ]
   spec.static_framework       = true
 
