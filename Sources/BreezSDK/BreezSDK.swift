@@ -19,13 +19,13 @@ fileprivate extension RustBuffer {
     }
 
     static func from(_ ptr: UnsafeBufferPointer<UInt8>) -> RustBuffer {
-        try! rustCall { ffi_breez_sdk_385e_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
+        try! rustCall { ffi_breez_sdk_b2f4_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
     }
 
     // Frees the buffer in place.
     // The buffer must not be used after this is called.
     func deallocate() {
-        try! rustCall { ffi_breez_sdk_385e_rustbuffer_free(self, $0) }
+        try! rustCall { ffi_breez_sdk_b2f4_rustbuffer_free(self, $0) }
     }
 }
 
@@ -483,7 +483,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     }
 
     deinit {
-        try! rustCall { ffi_breez_sdk_385e_BlockingBreezServices_object_free(pointer, $0) }
+        try! rustCall { ffi_breez_sdk_b2f4_BlockingBreezServices_object_free(pointer, $0) }
     }
 
     
@@ -492,14 +492,14 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `disconnect`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_disconnect(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_disconnect(self.pointer, $0
     )
 }
     }
     public func `configureNode`(`req`: ConfigureNodeRequest) throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_configure_node(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_configure_node(self.pointer, 
         FfiConverterTypeConfigureNodeRequest.lower(`req`), $0
     )
 }
@@ -508,7 +508,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeSendPaymentResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSendPaymentError.self) {
-    breez_sdk_385e_BlockingBreezServices_send_payment(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_send_payment(self.pointer, 
         FfiConverterTypeSendPaymentRequest.lower(`req`), $0
     )
 }
@@ -518,7 +518,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeSendPaymentResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSendPaymentError.self) {
-    breez_sdk_385e_BlockingBreezServices_send_spontaneous_payment(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_send_spontaneous_payment(self.pointer, 
         FfiConverterTypeSendSpontaneousPaymentRequest.lower(`req`), $0
     )
 }
@@ -528,7 +528,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeReceivePaymentResponse.lift(
             try
     rustCallWithError(FfiConverterTypeReceivePaymentError.self) {
-    breez_sdk_385e_BlockingBreezServices_receive_payment(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_receive_payment(self.pointer, 
         FfiConverterTypeReceivePaymentRequest.lower(`req`), $0
     )
 }
@@ -538,7 +538,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeLnUrlPayResult.lift(
             try
     rustCallWithError(FfiConverterTypeLnUrlPayError.self) {
-    breez_sdk_385e_BlockingBreezServices_pay_lnurl(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_pay_lnurl(self.pointer, 
         FfiConverterTypeLnUrlPayRequest.lower(`req`), $0
     )
 }
@@ -548,7 +548,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeLnUrlWithdrawResult.lift(
             try
     rustCallWithError(FfiConverterTypeLnUrlWithdrawError.self) {
-    breez_sdk_385e_BlockingBreezServices_withdraw_lnurl(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_withdraw_lnurl(self.pointer, 
         FfiConverterTypeLnUrlWithdrawRequest.lower(`request`), $0
     )
 }
@@ -558,7 +558,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeLnUrlCallbackStatus.lift(
             try
     rustCallWithError(FfiConverterTypeLnUrlAuthError.self) {
-    breez_sdk_385e_BlockingBreezServices_lnurl_auth(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_lnurl_auth(self.pointer, 
         FfiConverterTypeLnUrlAuthRequestData.lower(`reqData`), $0
     )
 }
@@ -567,7 +567,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `reportIssue`(`req`: ReportIssueRequest) throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_report_issue(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_report_issue(self.pointer, 
         FfiConverterTypeReportIssueRequest.lower(`req`), $0
     )
 }
@@ -576,7 +576,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionTypeNodeCredentials.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_node_credentials(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_node_credentials(self.pointer, $0
     )
 }
         )
@@ -585,7 +585,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeNodeState.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_node_info(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_node_info(self.pointer, $0
     )
 }
         )
@@ -594,7 +594,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeSignMessageResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_sign_message(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_sign_message(self.pointer, 
         FfiConverterTypeSignMessageRequest.lower(`req`), $0
     )
 }
@@ -604,7 +604,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeCheckMessageResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_check_message(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_check_message(self.pointer, 
         FfiConverterTypeCheckMessageRequest.lower(`req`), $0
     )
 }
@@ -614,7 +614,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeBackupStatus.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_backup_status(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_backup_status(self.pointer, $0
     )
 }
         )
@@ -622,7 +622,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `backup`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_backup(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_backup(self.pointer, $0
     )
 }
     }
@@ -630,7 +630,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypePayment.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_list_payments(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_list_payments(self.pointer, 
         FfiConverterTypeListPaymentsRequest.lower(`req`), $0
     )
 }
@@ -640,7 +640,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionTypePayment.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_payment_by_hash(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_payment_by_hash(self.pointer, 
         FfiConverterString.lower(`hash`), $0
     )
 }
@@ -649,7 +649,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `setPaymentMetadata`(`hash`: String, `metadata`: String) throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_set_payment_metadata(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_set_payment_metadata(self.pointer, 
         FfiConverterString.lower(`hash`), 
         FfiConverterString.lower(`metadata`), $0
     )
@@ -659,7 +659,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeRedeemOnchainFundsResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_redeem_onchain_funds(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_redeem_onchain_funds(self.pointer, 
         FfiConverterTypeRedeemOnchainFundsRequest.lower(`req`), $0
     )
 }
@@ -669,7 +669,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeRate.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_fetch_fiat_rates(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_fetch_fiat_rates(self.pointer, $0
     )
 }
         )
@@ -678,7 +678,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeFiatCurrency.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_list_fiat_currencies(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_list_fiat_currencies(self.pointer, $0
     )
 }
         )
@@ -687,7 +687,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeLspInformation.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_list_lsps(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_list_lsps(self.pointer, $0
     )
 }
         )
@@ -695,7 +695,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `connectLsp`(`lspId`: String) throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_connect_lsp(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_connect_lsp(self.pointer, 
         FfiConverterString.lower(`lspId`), $0
     )
 }
@@ -704,7 +704,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionTypeLspInformation.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_fetch_lsp_info(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_fetch_lsp_info(self.pointer, 
         FfiConverterString.lower(`lspId`), $0
     )
 }
@@ -714,7 +714,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeOpenChannelFeeResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_open_channel_fee(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_open_channel_fee(self.pointer, 
         FfiConverterTypeOpenChannelFeeRequest.lower(`req`), $0
     )
 }
@@ -724,7 +724,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionString.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_lsp_id(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_lsp_id(self.pointer, $0
     )
 }
         )
@@ -733,7 +733,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeLspInformation.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_lsp_info(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_lsp_info(self.pointer, $0
     )
 }
         )
@@ -741,14 +741,14 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `closeLspChannels`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_close_lsp_channels(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_close_lsp_channels(self.pointer, $0
     )
 }
     }
     public func `registerWebhook`(`webhookUrl`: String) throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_register_webhook(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_register_webhook(self.pointer, 
         FfiConverterString.lower(`webhookUrl`), $0
     )
 }
@@ -757,7 +757,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeReceiveOnchainError.self) {
-    breez_sdk_385e_BlockingBreezServices_receive_onchain(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_receive_onchain(self.pointer, 
         FfiConverterTypeReceiveOnchainRequest.lower(`req`), $0
     )
 }
@@ -767,7 +767,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterOptionTypeSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_in_progress_swap(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_in_progress_swap(self.pointer, $0
     )
 }
         )
@@ -775,14 +775,14 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `rescanSwaps`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_rescan_swaps(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_rescan_swaps(self.pointer, $0
     )
 }
     }
     public func `redeemSwap`(`swapAddress`: String) throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_redeem_swap(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_redeem_swap(self.pointer, 
         FfiConverterString.lower(`swapAddress`), $0
     )
 }
@@ -791,7 +791,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_list_refundables(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_list_refundables(self.pointer, $0
     )
 }
         )
@@ -800,7 +800,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypePrepareRefundResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_prepare_refund(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_prepare_refund(self.pointer, 
         FfiConverterTypePrepareRefundRequest.lower(`req`), $0
     )
 }
@@ -810,7 +810,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeRefundResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_refund(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_refund(self.pointer, 
         FfiConverterTypeRefundRequest.lower(`req`), $0
     )
 }
@@ -820,7 +820,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeReverseSwapPairInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_fetch_reverse_swap_fees(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_fetch_reverse_swap_fees(self.pointer, 
         FfiConverterTypeReverseSwapFeesRequest.lower(`req`), $0
     )
 }
@@ -830,7 +830,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeOnchainPaymentLimitsResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_onchain_payment_limits(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_onchain_payment_limits(self.pointer, $0
     )
 }
         )
@@ -839,7 +839,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypePrepareOnchainPaymentResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSendOnchainError.self) {
-    breez_sdk_385e_BlockingBreezServices_prepare_onchain_payment(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_prepare_onchain_payment(self.pointer, 
         FfiConverterTypePrepareOnchainPaymentRequest.lower(`req`), $0
     )
 }
@@ -849,7 +849,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeReverseSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_in_progress_onchain_payments(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_in_progress_onchain_payments(self.pointer, $0
     )
 }
         )
@@ -858,7 +858,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterSequenceTypeReverseSwapInfo.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_in_progress_reverse_swaps(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_in_progress_reverse_swaps(self.pointer, $0
     )
 }
         )
@@ -867,7 +867,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeMaxReverseSwapAmountResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_max_reverse_swap_amount(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_max_reverse_swap_amount(self.pointer, $0
     )
 }
         )
@@ -876,7 +876,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeSendOnchainResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSendOnchainError.self) {
-    breez_sdk_385e_BlockingBreezServices_send_onchain(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_send_onchain(self.pointer, 
         FfiConverterTypeSendOnchainRequest.lower(`req`), $0
     )
 }
@@ -886,7 +886,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypePayOnchainResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSendOnchainError.self) {
-    breez_sdk_385e_BlockingBreezServices_pay_onchain(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_pay_onchain(self.pointer, 
         FfiConverterTypePayOnchainRequest.lower(`req`), $0
     )
 }
@@ -896,7 +896,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterString.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_execute_dev_command(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_execute_dev_command(self.pointer, 
         FfiConverterString.lower(`command`), $0
     )
 }
@@ -906,7 +906,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterString.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_generate_diagnostic_data(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_generate_diagnostic_data(self.pointer, $0
     )
 }
         )
@@ -914,7 +914,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
     public func `sync`() throws {
         try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_sync(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_sync(self.pointer, $0
     )
 }
     }
@@ -922,7 +922,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeRecommendedFees.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_recommended_fees(self.pointer, $0
+    breez_sdk_b2f4_BlockingBreezServices_recommended_fees(self.pointer, $0
     )
 }
         )
@@ -931,7 +931,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypeBuyBitcoinResponse.lift(
             try
     rustCallWithError(FfiConverterTypeReceiveOnchainError.self) {
-    breez_sdk_385e_BlockingBreezServices_buy_bitcoin(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_buy_bitcoin(self.pointer, 
         FfiConverterTypeBuyBitcoinRequest.lower(`req`), $0
     )
 }
@@ -941,7 +941,7 @@ public class BlockingBreezServices: BlockingBreezServicesProtocol {
         return try FfiConverterTypePrepareRedeemOnchainFundsResponse.lift(
             try
     rustCallWithError(FfiConverterTypeSdkError.self) {
-    breez_sdk_385e_BlockingBreezServices_prepare_redeem_onchain_funds(self.pointer, 
+    breez_sdk_b2f4_BlockingBreezServices_prepare_redeem_onchain_funds(self.pointer, 
         FfiConverterTypePrepareRedeemOnchainFundsRequest.lower(`req`), $0
     )
 }
@@ -2309,6 +2309,7 @@ public struct LnPaymentDetails {
     public var `openChannelBolt11`: String?
     public var `lnurlSuccessAction`: SuccessActionProcessed?
     public var `lnurlPayDomain`: String?
+    public var `lnurlPayComment`: String?
     public var `lnurlMetadata`: String?
     public var `lnAddress`: String?
     public var `lnurlWithdrawEndpoint`: String?
@@ -2318,7 +2319,7 @@ public struct LnPaymentDetails {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(`paymentHash`: String, `label`: String, `destinationPubkey`: String, `paymentPreimage`: String, `keysend`: Bool, `bolt11`: String, `openChannelBolt11`: String?, `lnurlSuccessAction`: SuccessActionProcessed?, `lnurlPayDomain`: String?, `lnurlMetadata`: String?, `lnAddress`: String?, `lnurlWithdrawEndpoint`: String?, `swapInfo`: SwapInfo?, `reverseSwapInfo`: ReverseSwapInfo?, `pendingExpirationBlock`: UInt32?) {
+    public init(`paymentHash`: String, `label`: String, `destinationPubkey`: String, `paymentPreimage`: String, `keysend`: Bool, `bolt11`: String, `openChannelBolt11`: String?, `lnurlSuccessAction`: SuccessActionProcessed?, `lnurlPayDomain`: String?, `lnurlPayComment`: String?, `lnurlMetadata`: String?, `lnAddress`: String?, `lnurlWithdrawEndpoint`: String?, `swapInfo`: SwapInfo?, `reverseSwapInfo`: ReverseSwapInfo?, `pendingExpirationBlock`: UInt32?) {
         self.`paymentHash` = `paymentHash`
         self.`label` = `label`
         self.`destinationPubkey` = `destinationPubkey`
@@ -2328,6 +2329,7 @@ public struct LnPaymentDetails {
         self.`openChannelBolt11` = `openChannelBolt11`
         self.`lnurlSuccessAction` = `lnurlSuccessAction`
         self.`lnurlPayDomain` = `lnurlPayDomain`
+        self.`lnurlPayComment` = `lnurlPayComment`
         self.`lnurlMetadata` = `lnurlMetadata`
         self.`lnAddress` = `lnAddress`
         self.`lnurlWithdrawEndpoint` = `lnurlWithdrawEndpoint`
@@ -2367,6 +2369,9 @@ extension LnPaymentDetails: Equatable, Hashable {
         if lhs.`lnurlPayDomain` != rhs.`lnurlPayDomain` {
             return false
         }
+        if lhs.`lnurlPayComment` != rhs.`lnurlPayComment` {
+            return false
+        }
         if lhs.`lnurlMetadata` != rhs.`lnurlMetadata` {
             return false
         }
@@ -2398,6 +2403,7 @@ extension LnPaymentDetails: Equatable, Hashable {
         hasher.combine(`openChannelBolt11`)
         hasher.combine(`lnurlSuccessAction`)
         hasher.combine(`lnurlPayDomain`)
+        hasher.combine(`lnurlPayComment`)
         hasher.combine(`lnurlMetadata`)
         hasher.combine(`lnAddress`)
         hasher.combine(`lnurlWithdrawEndpoint`)
@@ -2420,6 +2426,7 @@ public struct FfiConverterTypeLnPaymentDetails: FfiConverterRustBuffer {
             `openChannelBolt11`: FfiConverterOptionString.read(from: &buf), 
             `lnurlSuccessAction`: FfiConverterOptionTypeSuccessActionProcessed.read(from: &buf), 
             `lnurlPayDomain`: FfiConverterOptionString.read(from: &buf), 
+            `lnurlPayComment`: FfiConverterOptionString.read(from: &buf), 
             `lnurlMetadata`: FfiConverterOptionString.read(from: &buf), 
             `lnAddress`: FfiConverterOptionString.read(from: &buf), 
             `lnurlWithdrawEndpoint`: FfiConverterOptionString.read(from: &buf), 
@@ -2439,6 +2446,7 @@ public struct FfiConverterTypeLnPaymentDetails: FfiConverterRustBuffer {
         FfiConverterOptionString.write(value.`openChannelBolt11`, into: &buf)
         FfiConverterOptionTypeSuccessActionProcessed.write(value.`lnurlSuccessAction`, into: &buf)
         FfiConverterOptionString.write(value.`lnurlPayDomain`, into: &buf)
+        FfiConverterOptionString.write(value.`lnurlPayComment`, into: &buf)
         FfiConverterOptionString.write(value.`lnurlMetadata`, into: &buf)
         FfiConverterOptionString.write(value.`lnAddress`, into: &buf)
         FfiConverterOptionString.write(value.`lnurlWithdrawEndpoint`, into: &buf)
@@ -4220,13 +4228,15 @@ public struct PaymentFailedData {
     public var `error`: String
     public var `nodeId`: String
     public var `invoice`: LnInvoice?
+    public var `label`: String?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(`error`: String, `nodeId`: String, `invoice`: LnInvoice?) {
+    public init(`error`: String, `nodeId`: String, `invoice`: LnInvoice?, `label`: String?) {
         self.`error` = `error`
         self.`nodeId` = `nodeId`
         self.`invoice` = `invoice`
+        self.`label` = `label`
     }
 }
 
@@ -4242,6 +4252,9 @@ extension PaymentFailedData: Equatable, Hashable {
         if lhs.`invoice` != rhs.`invoice` {
             return false
         }
+        if lhs.`label` != rhs.`label` {
+            return false
+        }
         return true
     }
 
@@ -4249,6 +4262,7 @@ extension PaymentFailedData: Equatable, Hashable {
         hasher.combine(`error`)
         hasher.combine(`nodeId`)
         hasher.combine(`invoice`)
+        hasher.combine(`label`)
     }
 }
 
@@ -4258,7 +4272,8 @@ public struct FfiConverterTypePaymentFailedData: FfiConverterRustBuffer {
         return try PaymentFailedData(
             `error`: FfiConverterString.read(from: &buf), 
             `nodeId`: FfiConverterString.read(from: &buf), 
-            `invoice`: FfiConverterOptionTypeLnInvoice.read(from: &buf)
+            `invoice`: FfiConverterOptionTypeLnInvoice.read(from: &buf), 
+            `label`: FfiConverterOptionString.read(from: &buf)
         )
     }
 
@@ -4266,6 +4281,7 @@ public struct FfiConverterTypePaymentFailedData: FfiConverterRustBuffer {
         FfiConverterString.write(value.`error`, into: &buf)
         FfiConverterString.write(value.`nodeId`, into: &buf)
         FfiConverterOptionTypeLnInvoice.write(value.`invoice`, into: &buf)
+        FfiConverterOptionString.write(value.`label`, into: &buf)
     }
 }
 
@@ -9143,7 +9159,7 @@ fileprivate struct FfiConverterCallbackInterfaceEventListener {
     private static var callbackInitialized = false
     private static func initCallback() {
         try! rustCall { (err: UnsafeMutablePointer<RustCallStatus>) in
-                ffi_breez_sdk_385e_EventListener_init_callback(foreignCallbackCallbackInterfaceEventListener, err)
+                ffi_breez_sdk_b2f4_EventListener_init_callback(foreignCallbackCallbackInterfaceEventListener, err)
         }
     }
     private static func ensureCallbackinitialized() {
@@ -9257,7 +9273,7 @@ fileprivate struct FfiConverterCallbackInterfaceLogStream {
     private static var callbackInitialized = false
     private static func initCallback() {
         try! rustCall { (err: UnsafeMutablePointer<RustCallStatus>) in
-                ffi_breez_sdk_385e_LogStream_init_callback(foreignCallbackCallbackInterfaceLogStream, err)
+                ffi_breez_sdk_b2f4_LogStream_init_callback(foreignCallbackCallbackInterfaceLogStream, err)
         }
     }
     private static func ensureCallbackinitialized() {
@@ -10146,7 +10162,7 @@ public func `connect`(`req`: ConnectRequest, `listener`: EventListener) throws -
     
     rustCallWithError(FfiConverterTypeConnectError.self) {
     
-    breez_sdk_385e_connect(
+    breez_sdk_b2f4_connect(
         FfiConverterTypeConnectRequest.lower(`req`), 
         FfiConverterCallbackInterfaceEventListener.lower(`listener`), $0)
 }
@@ -10160,7 +10176,7 @@ public func `setLogStream`(`logStream`: LogStream) throws {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_385e_set_log_stream(
+    breez_sdk_b2f4_set_log_stream(
         FfiConverterCallbackInterfaceLogStream.lower(`logStream`), $0)
 }
 }
@@ -10172,7 +10188,7 @@ public func `parseInvoice`(`invoice`: String) throws -> LnInvoice {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_385e_parse_invoice(
+    breez_sdk_b2f4_parse_invoice(
         FfiConverterString.lower(`invoice`), $0)
 }
     )
@@ -10186,7 +10202,7 @@ public func `parseInput`(`s`: String) throws -> InputType {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_385e_parse_input(
+    breez_sdk_b2f4_parse_input(
         FfiConverterString.lower(`s`), $0)
 }
     )
@@ -10200,7 +10216,7 @@ public func `mnemonicToSeed`(`phrase`: String) throws -> [UInt8] {
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_385e_mnemonic_to_seed(
+    breez_sdk_b2f4_mnemonic_to_seed(
         FfiConverterString.lower(`phrase`), $0)
 }
     )
@@ -10214,7 +10230,7 @@ public func `defaultConfig`(`envType`: EnvironmentType, `apiKey`: String, `nodeC
     
     rustCall() {
     
-    breez_sdk_385e_default_config(
+    breez_sdk_b2f4_default_config(
         FfiConverterTypeEnvironmentType.lower(`envType`), 
         FfiConverterString.lower(`apiKey`), 
         FfiConverterTypeNodeConfig.lower(`nodeConfig`), $0)
@@ -10230,7 +10246,7 @@ public func `staticBackup`(`req`: StaticBackupRequest) throws -> StaticBackupRes
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_385e_static_backup(
+    breez_sdk_b2f4_static_backup(
         FfiConverterTypeStaticBackupRequest.lower(`req`), $0)
 }
     )
@@ -10244,7 +10260,7 @@ public func `serviceHealthCheck`(`apiKey`: String) throws -> ServiceHealthCheckR
     
     rustCallWithError(FfiConverterTypeSdkError.self) {
     
-    breez_sdk_385e_service_health_check(
+    breez_sdk_b2f4_service_health_check(
         FfiConverterString.lower(`apiKey`), $0)
 }
     )
