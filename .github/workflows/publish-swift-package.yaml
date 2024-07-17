@@ -48,6 +48,7 @@ jobs:
         working-directory: build/libs/sdk-bindings/bindings-swift
         run: |
           sed 's#.binaryTarget(name: "breez_sdkFFI", path: "./breez_sdkFFI.xcframework"),#.binaryTarget(name: "breez_sdkFFI", url: "https://github.com/breez/breez-sdk-swift/releases/download/${{ inputs.version }}/breez_sdkFFI.xcframework.zip", checksum: "${{ env.XCF_CHECKSUM }}"),#;/.testTarget(name: "BreezSDKTests", dependencies: \["BreezSDK"\]),/d' Package.swift > ../../../../dist/Package.swift
+          rm -rf ../../../../../dist/Sources
           cp -r Sources ../../../../dist
       - name: Update Cocoapods definitions
         working-directory: dist
