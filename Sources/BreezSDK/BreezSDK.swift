@@ -8205,6 +8205,7 @@ public enum EnvironmentType {
     
     case production
     case staging
+    case regtest
 }
 
 
@@ -8222,6 +8223,8 @@ public struct FfiConverterTypeEnvironmentType: FfiConverterRustBuffer {
         
         case 2: return .staging
         
+        case 3: return .regtest
+        
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -8236,6 +8239,10 @@ public struct FfiConverterTypeEnvironmentType: FfiConverterRustBuffer {
         
         case .staging:
             writeInt(&buf, Int32(2))
+        
+        
+        case .regtest:
+            writeInt(&buf, Int32(3))
         
         }
     }
@@ -8532,6 +8539,98 @@ public func FfiConverterTypeInputType_lower(_ value: InputType) -> RustBuffer {
 
 
 extension InputType: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum LevelFilter {
+    
+    case off
+    case error
+    case warn
+    case info
+    case debug
+    case trace
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeLevelFilter: FfiConverterRustBuffer {
+    typealias SwiftType = LevelFilter
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LevelFilter {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .off
+        
+        case 2: return .error
+        
+        case 3: return .warn
+        
+        case 4: return .info
+        
+        case 5: return .debug
+        
+        case 6: return .trace
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: LevelFilter, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .off:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .error:
+            writeInt(&buf, Int32(2))
+        
+        
+        case .warn:
+            writeInt(&buf, Int32(3))
+        
+        
+        case .info:
+            writeInt(&buf, Int32(4))
+        
+        
+        case .debug:
+            writeInt(&buf, Int32(5))
+        
+        
+        case .trace:
+            writeInt(&buf, Int32(6))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLevelFilter_lift(_ buf: RustBuffer) throws -> LevelFilter {
+    return try FfiConverterTypeLevelFilter.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLevelFilter_lower(_ value: LevelFilter) -> RustBuffer {
+    return FfiConverterTypeLevelFilter.lower(value)
+}
+
+
+
+extension LevelFilter: Equatable, Hashable {}
 
 
 
@@ -11014,6 +11113,30 @@ fileprivate struct FfiConverterOptionTypeSymbol: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeLevelFilter: FfiConverterRustBuffer {
+    typealias SwiftType = LevelFilter?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeLevelFilter.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeLevelFilter.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeNodeCredentials: FfiConverterRustBuffer {
     typealias SwiftType = NodeCredentials?
 
@@ -11697,9 +11820,10 @@ public func serviceHealthCheck(apiKey: String)throws  -> ServiceHealthCheckRespo
     )
 })
 }
-public func setLogStream(logStream: LogStream)throws  {try rustCallWithError(FfiConverterTypeSdkError.lift) {
+public func setLogStream(logStream: LogStream, filterLevel: LevelFilter?)throws  {try rustCallWithError(FfiConverterTypeSdkError.lift) {
     uniffi_breez_sdk_bindings_fn_func_set_log_stream(
-        FfiConverterCallbackInterfaceLogStream.lower(logStream),$0
+        FfiConverterCallbackInterfaceLogStream.lower(logStream),
+        FfiConverterOptionTypeLevelFilter.lower(filterLevel),$0
     )
 }
 }
@@ -11744,7 +11868,7 @@ private var initializationResult: InitializationResult = {
     if (uniffi_breez_sdk_bindings_checksum_func_service_health_check() != 1079) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_breez_sdk_bindings_checksum_func_set_log_stream() != 34756) {
+    if (uniffi_breez_sdk_bindings_checksum_func_set_log_stream() != 25613) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_breez_sdk_bindings_checksum_func_static_backup() != 34455) {
